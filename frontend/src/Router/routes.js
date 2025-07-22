@@ -4,6 +4,7 @@ import ORegistrationForms from "@/components/Home/O_RegistrationForm.vue";
 import LoginForm from "@/components/Home/LoginForm.vue";
 import TypeOfAccount from "@/components/Home/TypeOfAccount.vue";
 import { createRouter, createWebHistory } from "vue-router";
+import OrgHomePage from "@/components/Home/OrganizationHomePage.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,6 +28,10 @@ const router = createRouter({
     {
       path: "/typeofaccount",
       component: TypeOfAccount,
+    },
+    {
+      path:"/OrganizationHomePage",
+      component: OrgHomePage,
     },
   ],
 });
