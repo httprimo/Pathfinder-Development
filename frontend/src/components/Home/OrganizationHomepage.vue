@@ -18,10 +18,12 @@
         <div class="icon" @click="togglePostOptions">
           📨<span>Post</span>
         </div>
-        <div v-if="showPostOptions" class="post-options">
+      <transition name="fade">
+        <div v-if="showPostOptions && isSidebarOpen" class="post-options">
           <button @click="$router.push('/post-career')">Post Career</button>
           <button @click="$router.push('/post-training')">Post Training</button>
         </div>
+      </transition>
         <div class="icon" @click="$router.push('/career')">
           📈<span>Career</span>
         </div>
@@ -29,19 +31,86 @@
     </transition na>
 
     <!-- Main content -->
-    <main class="content">
-      <header class="topbar">
-          <div class="search-container">
-            <span class="search-icon">🔍</span>
-          <input type="text" placeholder="Search..." class="search-input" />
-           </div>
-          </header>
-    </main>
+<main class="content">
+  <header class="topbar">
+    <div class="search-container">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Search..." class="search-input" />
+    </div>
+  </header>
+
+  <!-- Chart Section -->
+  <section class="chart-section">
+    <canvas id="applicantChart"></canvas>
+    <div class="legend">
+      <span><span class="dot blue"></span> Training Applicants</span>
+      <span><span class="dot purple"></span> Job Applicants</span>
+    </div>
+  </section>
+
+  <!-- Trainings Section -->
+  <section class="section-block">
+    <h2>Trainings</h2>
+    <div class="card-grid">
+      <div class="info-card">
+        <p>Professional development in emerging technologies and cognitive enhancement</p>
+        <div class="card-footer">
+  <img src="https://placehold.co/30x30" alt="Logo" />
+  <div class="actions">
+    <button class="bookmark">🔖</button>
+    <button class="register-btn">Register</button>
+  </div>
+</div>
+      </div>
+      <div class="info-card">
+        <p>Mind Over Machine: Navigating AI in Everyday Life</p>
+        <div class="card-footer">
+  <img src="https://placehold.co/30x30" alt="Logo" />
+  <div class="actions">
+    <button class="bookmark">🔖</button>
+    <button class="register-btn">Register</button>
+  </div>
+</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Career Section -->
+  <section class="section-block">
+    <h2>Career Opportunities</h2>
+    <div class="card-grid">
+      <div class="info-card">
+        <p>Hiring: Front-End Developer! If you speak fluent React, we want you!</p>
+        <div class="card-footer">
+  <img src="https://placehold.co/30x30" alt="Logo" />
+  <div class="actions">
+    <button class="bookmark">🔖</button>
+    <button class="register-btn">Register</button>
+  </div>
+</div>
+      </div>
+      <div class="info-card">
+        <p>Chef Wanted! Join a fast-paced kitchen with a passion for food!</p>
+        <div class="card-footer">
+  <img src="https://placehold.co/30x30" alt="Logo" />
+  <div class="actions">
+    <button class="bookmark">🔖</button>
+    <button class="register-btn">Register</button>
+  </div>
+</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { onMounted } from 'vue'
+import Chart from 'chart.js/auto'
 
 const showPostOptions = ref(false)
 
@@ -54,6 +123,36 @@ const isSidebarOpen = ref(true)
 const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value
 }
+
+onMounted(() => {
+  const ctx = document.getElementById('applicantChart')
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+      datasets: [
+        {
+          label: 'Training Applicants',
+          data: [10, 20, 15, 25, 40, 30],
+          borderColor: '#3182ce',
+          fill: false
+        },
+        {
+          label: 'Job Applicants',
+          data: [5, 15, 20, 22, 50, 35],
+          borderColor: '#9f7aea',
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      }
+    }
+  })
+})
 
 
 </script>
@@ -289,4 +388,117 @@ const toggleSidebar = () => {
 .visit-link:hover {
   background-color: #e6f0fb;
 }
+
+.chart-section {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  margin: 40px auto;
+  width: 90%;
+  max-width: 900px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.chart-section canvas {
+  width: 100% !important;
+  max-width: 800px;
+  height: auto !important;
+  margin: 0 auto;
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #4a5568;
+}
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.dot.blue { background-color: #3182ce; }
+.dot.purple { background-color: #9f7aea; }
+
+.section-block {
+  margin: 50px auto;
+  max-width: 1000px;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.section-block h2 {
+  font-size: 26px;
+  color: #2d3748;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.card-grid {
+  display: flex;
+  justify-content: center; /* center the grid */
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.info-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  flex: 1 1 300px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.info-card p {
+  font-size: 15px;
+  color: #2d3748;
+  margin-bottom: 16px;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* logo on left, buttons on right */
+}
+
+.card-footer .actions {
+  display: flex;
+  gap: 8px; /* adjust spacing between buttons */
+}
+
+.bookmark,  
+.register-btn {
+  background-color: #2d3748;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.register-btn {
+  background-color: #3182ce;
+}
+
+.register-btn:hover {
+  background-color: #2b6cb0;
+}
+
 </style>
