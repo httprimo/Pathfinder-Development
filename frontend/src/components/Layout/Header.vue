@@ -11,6 +11,7 @@ function handleLogout() {
 }
 </script>
 
+
 <template>
   <div class="navbar bg-base-100 shadow-sm">
     <div class="navbar-start">
