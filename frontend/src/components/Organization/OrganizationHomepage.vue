@@ -1,10 +1,11 @@
+
 <template>
   <div class="organization-homepage">
     <!-- Sidebar -->
     <transition name="slide">
       <aside class="sidebar" :class="{ collapsed: !isSidebarOpen }" @mouseenter="isSidebarOpen = true"
         @mouseleave="isSidebarOpen = false">
-        <div class="icon" @click="$router.push('/home')">
+        <div class="icon" @click="$router.push('/OrganizationHomePage')">
           <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M6.25 17.0585C6.25 16.0494 6.25 15.5448 6.47166 15.1141C6.69333 14.6833 7.1039 14.3901 7.92505 13.8035L13.8375 9.58034C14.3989 9.17938 14.6795 8.9789 15 8.9789C15.3205 8.9789 15.6011 9.17938 16.1625 9.58034L22.075 13.8035C22.8961 14.3901 23.3067 14.6833 23.5283 15.1141C23.75 15.5448 23.75 16.0494 23.75 17.0585V24.25C23.75 25.1928 23.75 25.6642 23.4571 25.9571C23.1642 26.25 22.6928 26.25 21.75 26.25H8.25C7.30719 26.25 6.83579 26.25 6.54289 25.9571C6.25 25.6642 6.25 25.1928 6.25 24.25V17.0585Z"
@@ -197,7 +198,7 @@ const togglePostOptions = () => {
   showPostOptions.value = !showPostOptions.value
 }
 
-const isSidebarOpen = ref(true)
+const isSidebarOpen = ref(false)
 
 const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value
@@ -214,13 +215,15 @@ onMounted(() => {
           label: 'Training Applicants',
           data: [10, 20, 15, 25, 40, 30],
           borderColor: '#3182ce',
-          fill: false
+          fill: false,
+          tension: 0.4
         },
         {
           label: 'Job Applicants',
           data: [5, 15, 20, 22, 50, 35],
           borderColor: '#9f7aea',
-          fill: false
+          fill: false,
+          tension: 0.4
         }
       ]
     },
