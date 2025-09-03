@@ -132,12 +132,12 @@
 
           <!-- Form -->
           <form @submit.prevent="saveCareer" class="Caeer-popup-form">
-            <input v-model="newCareer.title" type="text" placeholder="Position" class="career-input" />
-            <input v-model="newCareer.type" type="text" placeholder="Details and Instruction" class="career-input" />
-            <textarea v-model="newCareer.description" placeholder="Qualifications" class="career-input"></textarea>
-            <textarea v-model="newCareer.description" placeholder="Requirements" class="career-input"></textarea>
-            <input v-model="newCareer.type" type="text" placeholder="Application Letter Address" class="career-input" />
-            <input v-model="newCareer.type" type="text" placeholder="Deadline of Submission" class="career-input" />
+            <input v-model="newCareer.position" type="text" placeholder="Position" class="career-input" />
+            <input v-model="newCareer.details" type="text" placeholder="Details and Instruction" class="career-input" />
+            <textarea v-model="newCareer.qualifications" placeholder="Qualifications" class="career-input"></textarea>
+            <textarea v-model="newCareer.requirements" placeholder="Requirements" class="career-input"></textarea>
+            <input v-model="newCareer.address" type="text" placeholder="Application Letter Address" class="career-input" />
+            <input v-model="newCareer.deadline" type="text" placeholder="Deadline of Submission" class="career-input" />
 
             <!-- Save -->
             <button type="submit" class="career-save-btn">Save</button>
@@ -226,9 +226,9 @@ export default {
         type: "",
         schedule: "",
         mode: "",
-        location: "",        // for On-Site
-        trainingLink: "",    // for Online
-        registrationLink: "" // always
+        location: "",        
+        trainingLink: "",    
+        registrationLink: "" 
       },
       upcomingtrainings: [],
       newCareer: {
