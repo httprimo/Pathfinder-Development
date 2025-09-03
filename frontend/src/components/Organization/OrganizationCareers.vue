@@ -112,7 +112,7 @@
 
       <!-- Insert job picks style block here -->
       <section class="upcoming">
-        <h2 class="section-title">Upcoming Trainings</h2>
+        <h2 class="section-title">On-Going Careers</h2>
         <div class="training-slider">
           <div class="training-card" v-for="training in upcomingtrainings" :key="training.id">
             <div class="training-left">
@@ -131,7 +131,7 @@
               <div class="menu-icon" @click="toggleUpcomingMenu(training.id)">⋮</div>
               <div v-if="openUpcomingMenu === training.id" class="dropdown-menu">
                 <ul>
-                  <li @click="openRegistrantsModal">Registrants</li>
+                  <li @click="openRegistrantsModal">Applicants</li>
                 </ul>
               </div>
             </div>
@@ -140,7 +140,7 @@
       </section>
 
       <section class="completed">
-        <h2 class="section-title">Completed Trainings</h2>
+        <h2 class="section-title">Filled Out Careers</h2>
         <div class="training-slider">
           <div class="training-card" v-for="training in completedtrainings" :key="training.id">
             <div class="training-left">
@@ -159,7 +159,7 @@
               <div class="menu-icon" @click="toggleCompletedMenu(training.id)">⋮</div>
               <div v-if="openCompletedMenu === training.id" class="dropdown-menu">
                 <ul>
-                  <li @click="openRegistrantsModal">Registrants</li>
+                  <li @click="openRegistrantsModal">Applicants</li>
                 </ul>
               </div>
             </div>
@@ -336,7 +336,7 @@ export default {
         type: "",
         schedule: "",
         mode: "",
-        location: "",       
+        location: "",        
         trainingLink: "",    
         registrationLink: "" 
       },

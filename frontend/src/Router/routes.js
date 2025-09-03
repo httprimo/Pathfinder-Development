@@ -6,6 +6,7 @@ import TypeOfAccount from "@/components/Home/TypeOfAccount.vue";
 import { createRouter, createWebHistory } from "vue-router";
 import OrgHomePage from "@/components/Organization/OrganizationHomepage.vue";
 import OrgTraining from "@/components/Organization/OrganizationTrainings.vue";
+import OrgCareer from "@/components/Organization/OrganizationCareers.vue";
 
 
 const router = createRouter({
@@ -38,6 +39,10 @@ const router = createRouter({
     {
       path:"/OrgTrainings",
       component: OrgTraining,
+    },
+    {
+      path:"/OrgCareers",
+      component: OrgCareer,
     },
   ],
 });
