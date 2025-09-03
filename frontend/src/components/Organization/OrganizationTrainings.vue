@@ -1,5 +1,5 @@
 <template>
-  <div class="organization-homepage">
+  <div class="organization-trainings">
     <!-- Sidebar -->
     <transition name="slide">
       <aside class="sidebar" :class="{ collapsed: !isSidebarOpen }" @click.self="toggleSidebar">
@@ -110,14 +110,75 @@
         </div>
       </header>
 
-      <!-- Chart Section -->
-      <section class="chart-section">
-        <canvas id="applicantChart"></canvas>
-        <div class="legend">
-          <span><span class="dot blue"></span> Training Applicants</span>
-          <span><span class="dot purple"></span> Job Applicants</span>
+      <!-- Insert job picks style block here -->
+      <section class="upcoming">
+        <h2 class="section-title">Upcoming Trainings</h2>
+        <div class="training-slider">
+          <div class="training-card" v-for="training in upcomingtrainings" :key="training.id">
+            <div class="training-left">
+              <div class="training-avatar"></div>
+            </div>
+
+            <div class="training-right">
+              <h3 class="training-title">{{ training.title }}</h3>
+              <p class="training-date">
+                {{ training.date }} | {{ training.time }}
+              </p>
+            </div>
+
+            <!-- 3-dot menu -->
+            <div class="menu">
+              <div class="menu-icon" @click="toggleUpcomingMenu(training.id)">⋮</div>
+              <div v-if="openUpcomingMenu === training.id" class="dropdown-menu">
+                <ul>
+                  <li @click="openRegistrantsModal">Registrants</li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
+
+      <section class="completed">
+        <h2 class="section-title">Completed Trainings</h2>
+        <div class="training-slider">
+          <div class="training-card" v-for="training in completedtrainings" :key="training.id">
+            <div class="training-left">
+              <div class="training-avatar"></div>
+            </div>
+
+            <div class="training-right">
+              <h3 class="training-title">{{ training.title }}</h3>
+              <p class="training-date">
+                {{ training.date }} | {{ training.time }}
+              </p>
+            </div>
+
+            <!-- 3-dot menu -->
+            <div class="menu">
+              <div class="menu-icon" @click="toggleCompletedMenu(training.id)">⋮</div>
+              <div v-if="openCompletedMenu === training.id" class="dropdown-menu">
+                <ul>
+                  <li @click="openRegistrantsModal">Registrants</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Registrants Modal -->
+      <div v-if="showRegistrantsModal" class="modal-overlay" @click.self="closeModal">
+        <div class="modal-content">
+          <h3>List of Registrants</h3>
+          <div class="registrants-grid">
+            <div v-for="person in registrantsList" :key="person.id" class="registrant-card">
+              <img :src="person.img" alt="profile" class="profile-pic" />
+              <p>{{ person.name }}</p>
+            </div>
+          </div>
+          <button @click="closeModal" class="close-btn">Close</button>
+        </div>
+      </div>
 
       <!-- Career Popup Modal -->
       <div v-if="showCareerPopup" class="career-popup-overlay">
@@ -146,8 +207,8 @@
       </div>
 
       <!-- Training Popup Modal -->
-      <div v-if="showTrainingPopup" class="career-popup-overlay">
-        <div class="career-popup">
+      <div v-if="showTrainingPopup" class="training-popup-overlay">
+        <div class="training-popup">
           <!-- Close Button -->
           <button @click="closeTrainingPopup" class="training-popup-close">
             ✕
@@ -181,6 +242,7 @@
                 </span>
               </div>
             </div>
+
 
             <!-- On-Site / Online -->
             <div class="training-radio-group">
@@ -218,6 +280,54 @@
 export default {
   data() {
     return {
+      showPostOptions: false,
+      openUpcomingMenu: null,
+      openCompletedMenu: null,
+
+      registrantsList: [
+        { id: 1, name: "John Doe", img: "https://i.pravatar.cc/100?img=1" },
+        { id: 2, name: "Maria Santos", img: "https://i.pravatar.cc/100?img=2" },
+        { id: 3, name: "David Cruz", img: "https://i.pravatar.cc/100?img=3" },
+        { id: 4, name: "Anna Lee", img: "https://i.pravatar.cc/100?img=4" },
+        { id: 5, name: "Mark Reyes", img: "https://i.pravatar.cc/100?img=5" },
+        { id: 6, name: "Sophia Tan", img: "https://i.pravatar.cc/100?img=6" },
+        { id: 7, name: "James Lim", img: "https://i.pravatar.cc/100?img=7" },
+        { id: 8, name: "Christine Dela Cruz", img: "https://i.pravatar.cc/100?img=8" },
+        { id: 9, name: "Robert Mendoza", img: "https://i.pravatar.cc/100?img=9" },
+        { id: 10, name: "Isabella Garcia", img: "https://i.pravatar.cc/100?img=10" },
+        { id: 11, name: "Daniel Chua", img: "https://i.pravatar.cc/100?img=11" },
+        { id: 12, name: "Patricia Ong", img: "https://i.pravatar.cc/100?img=12" },
+        { id: 13, name: "Michael Torres", img: "https://i.pravatar.cc/100?img=13" },
+        { id: 14, name: "Angela Bautista", img: "https://i.pravatar.cc/100?img=14" },
+        { id: 15, name: "Kevin Ramirez", img: "https://i.pravatar.cc/100?img=15" }
+      ],
+      showRegistrantsModal: false,
+
+      upcomingtrainings: [
+        { id: 1, title: "Mind Over Machine: Navigating AI in Everyday Life", date: "September 20, 2025", time: "7:30 PM to 12:00 PM" },
+        { id: 2, title: "Building Scalable Web Apps", date: "September 22, 2025", time: "9:00 AM to 11:00 AM" },
+        { id: 3, title: "Cybersecurity Fundamentals", date: "September 25, 2025", time: "1:00 PM to 4:00 PM" },
+      ],
+
+      completedtrainings: [
+        { id: 1, title: "Data Privacy and Security Essentials", date: "August 15, 2025", time: "2:00 PM – 4:00 PM" },
+        { id: 2, title: "Effective Team Communication Workshop", date: "August 12, 2025", time: "9:30 AM – 11:00 AM" },
+        { id: 3, title: "Introduction to Cloud Computing", date: "August 10, 2025", time: "1:00 PM – 3:30 PM" },
+        { id: 4, title: "Agile Project Kickoff", date: "August 7, 2025", time: "10:00 AM – 12:00 PM" },
+        { id: 5, title: "Basics of SQL", date: "August 5, 2025", time: "3:00 PM – 5:00 PM" },
+        { id: 6, title: "Public Speaking Bootcamp", date: "August 3, 2025", time: "9:00 AM – 11:00 AM" },
+        { id: 7, title: "Intro to Graphic Design", date: "July 31, 2025", time: "2:00 PM – 4:00 PM" },
+        { id: 8, title: "Conflict Resolution Training", date: "July 29, 2025", time: "11:00 AM – 1:00 PM" },
+        { id: 9, title: "Workplace Diversity & Inclusion", date: "July 27, 2025", time: "10:00 AM – 12:00 PM" },
+        { id: 10, title: "Excel for Data Analysis", date: "July 25, 2025", time: "9:00 AM – 11:30 AM" },
+        { id: 11, title: "Emotional Intelligence Workshop", date: "July 23, 2025", time: "1:30 PM – 3:30 PM" },
+        { id: 12, title: "Customer Service Excellence", date: "July 21, 2025", time: "2:00 PM – 4:00 PM" },
+        { id: 13, title: "Business Writing Skills", date: "July 19, 2025", time: "9:00 AM – 11:00 AM" },
+        { id: 14, title: "Leadership Essentials", date: "July 17, 2025", time: "3:00 PM – 5:00 PM" },
+        { id: 15, title: "Intro to Data Visualization", date: "July 15, 2025", time: "10:00 AM – 12:00 PM" }
+      ],
+
+      // Popup state + form
       showTrainingPopup: false,
       showCareerPopup: false,
       newTraining: {
@@ -230,7 +340,6 @@ export default {
         trainingLink: "",    // for Online
         registrationLink: "" // always
       },
-      upcomingtrainings: [],
       newCareer: {
         position: "",
         details: "",
@@ -241,8 +350,21 @@ export default {
       }
     }
   },
-
   methods: {
+    toggleUpcomingMenu(id) {
+      this.openUpcomingMenu = this.openUpcomingMenu === id ? null : id
+    },
+    toggleCompletedMenu(id) {
+      this.openCompletedMenu = this.openCompletedMenu === id ? null : id
+    },
+    openRegistrantsModal() {
+      this.showRegistrantsModal = true
+    },
+    closeModal() {
+      this.showRegistrantsModal = false
+    },
+
+    // Popup methods
     openCareerPopup() {
       this.showCareerPopup = true
     },
@@ -257,7 +379,6 @@ export default {
         deadline: ""
       }
     },
-
     openTrainingPopup() {
       this.showTrainingPopup = true
     },
@@ -286,10 +407,9 @@ export default {
 }
 </script>
 
+
 <script setup>
 import { ref } from 'vue'
-import { onMounted } from 'vue'
-import Chart from 'chart.js/auto'
 
 const showPostOptions = ref(false)
 
@@ -302,38 +422,6 @@ const isSidebarOpen = ref(true)
 const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value
 }
-
-onMounted(() => {
-  const ctx = document.getElementById('applicantChart')
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-      datasets: [
-        {
-          label: 'Training Applicants',
-          data: [10, 20, 15, 25, 40, 30],
-          borderColor: '#3182ce',
-          fill: false,
-          tension: 0.4
-        },
-        {
-          label: 'Job Applicants',
-          data: [5, 15, 20, 22, 50, 35],
-          borderColor: '#9f7aea',
-          fill: false,
-          tension: 0.4
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: false }
-      }
-    }
-  })
-})
 </script>
 
 <style scoped>
@@ -384,7 +472,7 @@ onMounted(() => {
   transform: translateY(-10px);
 }
 
-.organization-homepage {
+.organization-trainings {
   display: flex;
   height: 100vh;
   font-family: 'Segoe UI', sans-serif;
@@ -474,48 +562,10 @@ onMounted(() => {
   font-family: 'Segoe UI', sans-serif;
 }
 
-
-.chart-section {
-  background: white;
-  padding: 30px;
-  border-radius: 16px;
-  margin: 40px auto;
-  width: 90%;
-  max-width: 900px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
-.chart-section canvas {
-  width: 100% !important;
-  max-width: 800px;
-  height: auto !important;
-  margin: 0 auto;
-}
-
-.legend {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  margin-top: 10px;
-  font-size: 14px;
-  color: #4a5568;
-}
-
-.dot {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  margin-right: 6px;
-}
-
-.dot.blue {
-  background-color: #3182ce;
-}
-
-.dot.purple {
-  background-color: #9f7aea;
+.search-container {
+  position: relative;
+  width: 500px;
+  max-width: 100%;
 }
 
 .section-block {
@@ -531,6 +581,7 @@ onMounted(() => {
   margin-bottom: 20px;
   text-align: center;
 }
+
 
 .applicants-btn {
   background-color: #44576D;
@@ -604,6 +655,269 @@ onMounted(() => {
 
 .profile-actions .action:hover {
   opacity: 0.8;
+}
+
+/* Training and Job Offer Area*/
+
+.training-slider {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 10px 0;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #edf2f7;
+}
+
+.upcoming {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.completed {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #2d3748;
+}
+
+.training-card {
+  flex: 0 0 auto;
+  width: 350px;
+  display: flex;
+  align-items: flex-start;
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  scroll-snap-align: start;
+}
+
+.training-left {
+  margin-right: 12px;
+}
+
+.training-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  /* placeholder circle */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #718096;
+}
+
+.training:last-child {
+  border-bottom: none;
+}
+
+.training-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #2d3748;
+}
+
+.training-date {
+  font-size: 13px;
+  color: #4a5568;
+}
+
+.training-company {
+  font-size: 14px;
+  color: #718096;
+  margin-bottom: 10px;
+}
+
+.edit-btn {
+  background-color: #44576D;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.apply-btn:hover {
+  background-color: #5a667d;
+}
+
+.menu {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.menu-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #000;
+}
+
+.menu-icon {
+  cursor: pointer;
+  font-size: 20px;
+  color: #000;
+  position: absolute;
+  top: 2px;
+  right: 5px;
+}
+
+.menu-dropdown {
+  position: absolute;
+  top: 30px;
+  right: 0;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  padding: 8px 0;
+  width: 120px;
+  z-index: 10;
+}
+
+.menu-dropdown p {
+  margin: 0;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.menu-dropdown p:hover {
+  background: #f7fafc;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 25px;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  min-width: 160px;
+  overflow: hidden;
+}
+
+.dropdown-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dropdown-menu li {
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+  color: #000;
+  line-height: 1.4;
+}
+
+.dropdown-menu li+li {
+  border-top: 1px solid #eee;
+}
+
+.dropdown-menu li:hover {
+  background: #f7f7f7;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.close-btn {
+  margin-top: 15px;
+  padding: 8px 16px;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.registrants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 20px;
+  /* more space between cards */
+  margin-top: 15px;
+}
+
+.registrant-card {
+  background: #ffffff;
+  /* solid white card */
+  border: 1px solid #ddd;
+  /* light gray border */
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  /* stronger shadow */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.registrant-card:hover {
+  transform: translateY(-5px);
+  /* lift on hover */
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+.profile-pic {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.registrant-card p {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #000;
+  /* clear black text */
 }
 
 /* Post Career CSS */
@@ -768,12 +1082,6 @@ onMounted(() => {
   color: #000;
   /* input text black */
   font-size: 14px;
-}
-
-/* Placeholder / empty text */
-.schedule-input-wrapper input[type="date"]::placeholder {
-  color: #666;
-  /* same as other textboxes */
 }
 
 /* Hide default date picker icon (browser) */

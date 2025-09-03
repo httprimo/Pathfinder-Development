@@ -4,8 +4,8 @@ import ORegistrationForms from "@/components/Home/O_RegistrationForm.vue";
 import LoginForm from "@/components/Home/LoginForm.vue";
 import TypeOfAccount from "@/components/Home/TypeOfAccount.vue";
 import { createRouter, createWebHistory } from "vue-router";
-import OrgHomePage from "@/components/Organization/OrganizationHomePage.vue";
-import OrgProfile from "@/components/Organization/profile.vue";
+import OrgHomePage from "@/components/Organization/OrganizationHomepage.vue";
+import OrgTraining from "@/components/Organization/OrganizationTrainings.vue";
 
 
 const router = createRouter({
@@ -35,9 +35,9 @@ const router = createRouter({
       path:"/OrganizationHomePage",
       component: OrgHomePage,
     },
-        {
-      path:"/Profile",
-      component: OrgProfile,
+    {
+      path:"/OrgTrainings",
+      component: OrgTraining,
     },
   ],
 });

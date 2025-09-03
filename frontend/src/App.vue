@@ -5,6 +5,7 @@ import Footer from "./components/Layout/Footer.vue";
 import TypeOfAccount from "./components/Home/TypeOfAccount.vue";
 import LoginForm from "./components/Home/LoginForm.vue";
 
+
 // Access the current route
 const route = useRoute();
 </script>
@@ -16,7 +17,9 @@ const route = useRoute();
         route.path !== '/loginform' &&
         route.path !== '/typeofaccount' &&
         route.path !== '/a_registrationform' &&
-        route.path !== '/o_registrationform'
+        route.path !== '/o_registrationform' &&
+        route.path !== '/OrganizationHomePage' &&
+        route.path !== '/OrgTrainings'
       "
     />
     <main class="flex-grow">
