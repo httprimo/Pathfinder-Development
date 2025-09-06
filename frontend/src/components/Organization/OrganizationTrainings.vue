@@ -45,24 +45,6 @@
           </svg>
           <span>Trainings</span>
         </div>
-        <div class="icon" @click="togglePostOptions">
-          <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M3.625 7.625C3.625 5.41586 5.41586 3.625 7.625 3.625H21.375C23.5841 3.625 25.375 5.41586 25.375 7.625V21.375C25.375 23.5841 23.5841 25.375 21.375 25.375H7.625C5.41586 25.375 3.625 23.5841 3.625 21.375V7.625Z"
-              stroke="white" stroke-width="2" />
-            <path d="M14.5 9.6665L14.5 19.3332" stroke="white" stroke-width="2" stroke-linecap="square"
-              stroke-linejoin="round" />
-            <path d="M19.3333 14.5L9.66666 14.5" stroke="white" stroke-width="2" stroke-linecap="square"
-              stroke-linejoin="round" />
-          </svg>
-          <span>Post</span>
-        </div>
-        <transition name="fade">
-          <div v-if="showPostOptions && isSidebarOpen" class="post-options">
-            <button @click="openCareerPopup">Post Career</button>
-            <button @click="openTrainingPopup">Post Training</button>
-          </div>
-        </transition>
         <div class="icon" @click="$router.push('/OrgCareers')">
           <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -112,7 +94,17 @@
 
       <!-- Insert job picks style block here -->
       <section class="upcoming">
-        <h2 class="section-title">Upcoming Trainings</h2>
+        <div class="flex items-center justify-between">
+          <!-- Left side: title + count -->
+          <h2 class="section-title flex items-center gap-1">
+            Upcoming Trainings
+            <span class="count-badge">{{ upcomingtrainings.length }}</span>
+          </h2>
+
+          <!-- Right side: plain plus -->
+          <button class="plus-btn-text" @click="openTrainingPopup">+</button>
+        </div>
+
         <div class="training-slider">
           <div class="training-card" v-for="training in upcomingtrainings" :key="training.id">
             <div class="training-left">
@@ -140,7 +132,12 @@
       </section>
 
       <section class="completed">
-        <h2 class="section-title">Completed Trainings</h2>
+        <div class="flex items-center justify-between">
+          <h2 class="section-title flex items-center gap-1">Completed Trainings
+            <span class="count-badge">{{ completedtrainings.length }}</span>
+          </h2>
+        </div>
+
         <div class="training-slider">
           <div class="training-card" v-for="training in completedtrainings" :key="training.id">
             <div class="training-left">
@@ -180,28 +177,28 @@
         </div>
       </div>
 
-      <!-- Career Popup Modal -->
-      <div v-if="showCareerPopup" class="career-popup-overlay">
-        <div class="career-popup">
+      <!-- Training Popup Modal -->
+      <div v-if="showCareerPopup" class="training-popup-overlay">
+        <div class="training-popup">
           <!-- Close Button -->
-          <button @click="closeCareerPopup" class="career-popup-close">
+          <button @click="closetrainingPopup" class="training-popup-close">
             ✕
           </button>
 
           <!-- Title -->
-          <h2 class="career-popup-title">Post Career</h2>
+          <h2 class="training-popup-title">Post Training</h2>
 
           <!-- Form -->
-          <form @submit.prevent="saveCareer" class="Caeer-popup-form">
-            <input v-model="newCareer.title" type="text" placeholder="Position" class="career-input" />
-            <input v-model="newCareer.type" type="text" placeholder="Details and Instruction" class="career-input" />
-            <textarea v-model="newCareer.description" placeholder="Qualifications" class="career-input"></textarea>
-            <textarea v-model="newCareer.description" placeholder="Requirements" class="career-input"></textarea>
-            <input v-model="newCareer.type" type="text" placeholder="Application Letter Address" class="career-input" />
-            <input v-model="newCareer.type" type="text" placeholder="Deadline of Submission" class="career-input" />
+          <form @submit.prevent="saveTraining" class="training-popup-form">
+            <input v-model="newTraining.title" type="text" placeholder="Position" class="training-input" />
+            <input v-model="newTraining.type" type="text" placeholder="Details and Instruction" class="training-input" />
+            <textarea v-model="newTraining.description" placeholder="Qualifications" class="training-input"></textarea>
+            <textarea v-model="newTraining.description" placeholder="Requirements" class="training-input"></textarea>
+            <input v-model="newTraining.type" type="text" placeholder="Application Letter Address" class="training-input" />
+            <input v-model="newTraining.type" type="text" placeholder="Deadline of Submission" class="training-input" />
 
             <!-- Save -->
-            <button type="submit" class="career-save-btn">Save</button>
+            <button type="submit" class="training-save-btn">Save</button>
           </form>
         </div>
       </div>
@@ -280,7 +277,6 @@
 export default {
   data() {
     return {
-      showPostOptions: false,
       openUpcomingMenu: null,
       openCompletedMenu: null,
 
@@ -329,25 +325,16 @@ export default {
 
       // Popup state + form
       showTrainingPopup: false,
-      showCareerPopup: false,
       newTraining: {
         title: "",
         description: "",
         type: "",
         schedule: "",
         mode: "",
-        location: "",       
-        trainingLink: "",    
-        registrationLink: "" 
+        location: "",
+        trainingLink: "",
+        registrationLink: ""
       },
-      newCareer: {
-        position: "",
-        details: "",
-        qualifications: "",
-        requirements: "",
-        letterAddress: "",
-        deadline: ""
-      }
     }
   },
   methods: {
@@ -365,20 +352,6 @@ export default {
     },
 
     // Popup methods
-    openCareerPopup() {
-      this.showCareerPopup = true
-    },
-    closeCareerPopup() {
-      this.showCareerPopup = false
-      this.newCareer = {
-        position: "",
-        details: "",
-        qualifications: "",
-        requirements: "",
-        letterAddress: "",
-        deadline: ""
-      }
-    },
     openTrainingPopup() {
       this.showTrainingPopup = true
     },
@@ -411,12 +384,6 @@ export default {
 <script setup>
 import { ref } from 'vue'
 
-const showPostOptions = ref(false)
-
-const togglePostOptions = () => {
-  showPostOptions.value = !showPostOptions.value
-}
-
 const isSidebarOpen = ref(true)
 
 const toggleSidebar = () => {
@@ -425,41 +392,6 @@ const toggleSidebar = () => {
 </script>
 
 <style scoped>
-.post-icon {
-  position: relative;
-  width: 100%;
-}
-
-.post-options {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  background-color: #2d3748;
-  padding: 10px;
-  border-radius: 8px;
-  z-index: 100;
-  white-space: nowrap;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  transition: opacity 0.2s ease;
-}
-
-.post-options button {
-  background-color: #44576D;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  text-align: left;
-  font-size: 13px;
-  width: 120px;
-}
-
-.post-options button:hover {
-  background-color: #5a667d;
-}
-
 /* Optional fade animation */
 .fade-enter-active,
 .fade-leave-active {
@@ -920,8 +852,8 @@ const toggleSidebar = () => {
   /* clear black text */
 }
 
-/* Post Career CSS */
-.career-popup-overlay {
+/* Post Training CSS */
+.training-popup-overlay {
   position: fixed;
   inset: 0;
   display: flex;
@@ -931,7 +863,7 @@ const toggleSidebar = () => {
   z-index: 50;
 }
 
-.career-popup {
+.training-popup {
   background: #f9fafb;
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
@@ -940,7 +872,7 @@ const toggleSidebar = () => {
   position: relative;
 }
 
-.career-popup-close {
+.training-popup-close {
   position: absolute;
   top: 10px;
   right: 12px;
@@ -951,43 +883,43 @@ const toggleSidebar = () => {
   cursor: pointer;
 }
 
-.career-popup-title {
+.training-popup-title {
   font-size: 20px;
   font-weight: 600;
   color: #374151;
   margin-bottom: 16px;
 }
 
-.career-popup-form {
+.training-popup-form {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.career-input {
+.training-input {
   width: 100%;
   padding: 8px 10px;
   border: 1px solid #d1d5db;
   border-radius: 6px;
-  margin-bottom: 15px; 
+  margin-bottom: 15px;
   font-size: 14px;
   background: #ffffff;
   color: #111827;
 }
 
-.career-save-btn {
+.training-save-btn {
   background: #374151;
   color: white;
   font-size: 14px;
   font-weight: 500;
   padding: 10px;
   border-radius: 6px;
-  width: 100%; 
+  width: 100%;
   border: none;
   cursor: pointer;
 }
 
-.career-save-btn:hover {
+.training-save-btn:hover {
   background: #1f2937;
 }
 
@@ -1101,5 +1033,34 @@ const toggleSidebar = () => {
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
+}
+
+/* Counter Badge */
+.count-badge {
+  background-color: #374151;
+  color: white;
+  font-weight: bold;
+  padding: 0.15rem 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+}
+
+/* Posting Botton */
+.plus-btn-text {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  /* same scale as heading */
+  font-weight: bold;
+  line-height: 1;
+  /* keeps alignment neat */
+  color: #374151;
+  /* highlight color */
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.plus-btn-text:hover {
+  color: #000000;
 }
 </style>

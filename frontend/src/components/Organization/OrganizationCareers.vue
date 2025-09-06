@@ -45,24 +45,6 @@
           </svg>
           <span>Trainings</span>
         </div>
-        <div class="icon" @click="togglePostOptions">
-          <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M3.625 7.625C3.625 5.41586 5.41586 3.625 7.625 3.625H21.375C23.5841 3.625 25.375 5.41586 25.375 7.625V21.375C25.375 23.5841 23.5841 25.375 21.375 25.375H7.625C5.41586 25.375 3.625 23.5841 3.625 21.375V7.625Z"
-              stroke="white" stroke-width="2" />
-            <path d="M14.5 9.6665L14.5 19.3332" stroke="white" stroke-width="2" stroke-linecap="square"
-              stroke-linejoin="round" />
-            <path d="M19.3333 14.5L9.66666 14.5" stroke="white" stroke-width="2" stroke-linecap="square"
-              stroke-linejoin="round" />
-          </svg>
-          <span>Post</span>
-        </div>
-        <transition name="fade">
-          <div v-if="showPostOptions && isSidebarOpen" class="post-options">
-            <button @click="openCareerPopup">Post Career</button>
-            <button @click="openTrainingPopup">Post Training</button>
-          </div>
-        </transition>
         <div class="icon" @click="$router.push('/OrgCareers')">
           <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -112,24 +94,34 @@
 
       <!-- Insert job picks style block here -->
       <section class="upcoming">
-        <h2 class="section-title">On-Going Careers</h2>
-        <div class="training-slider">
-          <div class="training-card" v-for="training in upcomingtrainings" :key="training.id">
-            <div class="training-left">
-              <div class="training-avatar"></div>
+        <div class="flex items-center justify-between">
+          <!-- Left side: title + count -->
+          <h2 class="section-title flex items-center gap-1">
+            On-Going Careers
+            <span class="count-badge">{{ upcomingCareers.length }}</span>
+          </h2>
+
+          <!-- Right side: plain plus -->
+          <button class="plus-btn-text" @click="openCareerPopup">+</button>
+        </div>
+
+        <div class="career-slider">
+          <div class="career-card" v-for="career in upcomingCareers" :key="career.id">
+            <div class="career-left">
+              <div class="career-avatar"></div>
             </div>
 
-            <div class="training-right">
-              <h3 class="training-title">{{ training.title }}</h3>
-              <p class="training-date">
-                {{ training.date }} | {{ training.time }}
+            <div class="career-right">
+              <h3 class="career-title">{{ career.title }}</h3>
+              <p class="career-date">
+                {{ career.date }} | {{ career.time }}
               </p>
             </div>
 
             <!-- 3-dot menu -->
             <div class="menu">
-              <div class="menu-icon" @click="toggleUpcomingMenu(training.id)">⋮</div>
-              <div v-if="openUpcomingMenu === training.id" class="dropdown-menu">
+              <div class="menu-icon" @click="toggleUpcomingMenu(career.id)">⋮</div>
+              <div v-if="openUpcomingMenu === career.id" class="dropdown-menu">
                 <ul>
                   <li @click="openRegistrantsModal">Applicants</li>
                 </ul>
@@ -140,24 +132,28 @@
       </section>
 
       <section class="completed">
-        <h2 class="section-title">Filled Out Careers</h2>
-        <div class="training-slider">
-          <div class="training-card" v-for="training in completedtrainings" :key="training.id">
-            <div class="training-left">
-              <div class="training-avatar"></div>
+        <div class="flex items-center justify-between">
+        <h2 class="section-title flex items-center gap-1">Filled Out Careers 
+          <span class="count-badge">{{ completedCareers.length }}</span>
+        </h2>
+        </div>
+        <div class="career-slider">
+          <div class="career-card" v-for="career in completedCareers" :key="career.id">
+            <div class="career-left">
+              <div class="career-avatar"></div>
             </div>
 
-            <div class="training-right">
-              <h3 class="training-title">{{ training.title }}</h3>
-              <p class="training-date">
-                {{ training.date }} | {{ training.time }}
+            <div class="career-right">
+              <h3 class="career-title">{{ career.title }}</h3>
+              <p class="career-date">
+                {{ career.date }} | {{ career.time }}
               </p>
             </div>
 
             <!-- 3-dot menu -->
             <div class="menu">
-              <div class="menu-icon" @click="toggleCompletedMenu(training.id)">⋮</div>
-              <div v-if="openCompletedMenu === training.id" class="dropdown-menu">
+              <div class="menu-icon" @click="toggleCompletedMenu(career.id)">⋮</div>
+              <div v-if="openCompletedMenu === career.id" class="dropdown-menu">
                 <ul>
                   <li @click="openRegistrantsModal">Applicants</li>
                 </ul>
@@ -205,73 +201,6 @@
           </form>
         </div>
       </div>
-
-      <!-- Training Popup Modal -->
-      <div v-if="showTrainingPopup" class="training-popup-overlay">
-        <div class="training-popup">
-          <!-- Close Button -->
-          <button @click="closeTrainingPopup" class="training-popup-close">
-            ✕
-          </button>
-
-          <!-- Title -->
-          <h2 class="training-popup-title">Post Training</h2>
-
-          <!-- Form -->
-          <form @submit.prevent="saveTraining" class="training-popup-form">
-            <input v-model="newTraining.title" type="text" placeholder="Title" class="training-input" />
-            <textarea v-model="newTraining.description" placeholder="Description" class="training-input"></textarea>
-            <input v-model="newTraining.type" type="text" placeholder="Type" class="training-input" />
-
-            <!-- Schedule -->
-            <div class="popup-form-group schedule-group">
-              <label for="schedule">Schedule</label>
-              <div class="schedule-input-wrapper">
-                <input type="date" id="schedule" v-model="newTraining.schedule" placeholder="Schedule" />
-                <span class="calendar-icon">
-                  <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M2.16669 9.41675C2.16669 7.53113 2.16669 6.58832 2.75247 6.00253C3.33826 5.41675 4.28107 5.41675 6.16669 5.41675H19.8334C21.719 5.41675 22.6618 5.41675 23.2476 6.00253C23.8334 6.58832 23.8334 7.53113 23.8334 9.41675V9.83342C23.8334 10.3048 23.8334 10.5405 23.6869 10.687C23.5405 10.8334 23.3048 10.8334 22.8334 10.8334H3.16669C2.69528 10.8334 2.45958 10.8334 2.31313 10.687C2.16669 10.5405 2.16669 10.3048 2.16669 9.83341V9.41675Z"
-                      fill="black" />
-                    <path
-                      d="M22.833 13C23.3042 13 23.5401 13.0002 23.6865 13.1465C23.833 13.2929 23.833 13.5286 23.833 14V19.833C23.833 21.7186 23.8329 22.6613 23.2471 23.2471C22.6613 23.8329 21.7186 23.833 19.833 23.833H6.16699C4.28137 23.833 3.33872 23.8329 2.75293 23.2471C2.16714 22.6613 2.16699 21.7186 2.16699 19.833V14C2.16699 13.5286 2.16703 13.2929 2.31348 13.1465C2.45994 13.0002 2.69576 13 3.16699 13H22.833ZM8.58301 19.5C8.11182 19.5 7.87591 19.5001 7.72949 19.6465C7.58321 19.7929 7.58301 20.0288 7.58301 20.5V20.667C7.58301 21.1382 7.58308 21.3741 7.72949 21.5205C7.87591 21.6669 8.11182 21.667 8.58301 21.667H10.917C11.3882 21.667 11.6241 21.6669 11.7705 21.5205C11.9169 21.3741 11.917 21.1382 11.917 20.667V20.5C11.917 20.0288 11.9168 19.7929 11.7705 19.6465C11.6241 19.5001 11.3882 19.5 10.917 19.5H8.58301ZM15.083 19.5C14.6118 19.5 14.3759 19.5001 14.2295 19.6465C14.0832 19.7929 14.083 20.0288 14.083 20.5V20.667C14.083 21.1382 14.0831 21.3741 14.2295 21.5205C14.3759 21.6669 14.6118 21.667 15.083 21.667H17.417C17.8882 21.667 18.1241 21.6669 18.2705 21.5205C18.4169 21.3741 18.417 21.1382 18.417 20.667V20.5C18.417 20.0288 18.4168 19.7929 18.2705 19.6465C18.1241 19.5001 17.8882 19.5 17.417 19.5H15.083ZM8.58301 15.167C8.11182 15.167 7.87591 15.1671 7.72949 15.3135C7.58337 15.4599 7.58301 15.6959 7.58301 16.167V16.333C7.58301 16.8041 7.58337 17.0401 7.72949 17.1865C7.87591 17.3329 8.11182 17.333 8.58301 17.333H10.917C11.3882 17.333 11.6241 17.3329 11.7705 17.1865C11.9166 17.0401 11.917 16.8041 11.917 16.333V16.167C11.917 15.6959 11.9166 15.4599 11.7705 15.3135C11.6241 15.1671 11.3882 15.167 10.917 15.167H8.58301ZM15.083 15.167C14.6118 15.167 14.3759 15.1671 14.2295 15.3135C14.0834 15.4599 14.083 15.6959 14.083 16.167V16.333C14.083 16.8041 14.0834 17.0401 14.2295 17.1865C14.3759 17.3329 14.6118 17.333 15.083 17.333H17.417C17.8882 17.333 18.1241 17.3329 18.2705 17.1865C18.4166 17.0401 18.417 16.8041 18.417 16.333V16.167C18.417 15.6959 18.4166 15.4599 18.2705 15.3135C18.1241 15.1671 17.8882 15.167 17.417 15.167H15.083Z"
-                      fill="black" />
-                    <path d="M7.58331 3.25L7.58331 6.5" stroke="black" stroke-width="2" stroke-linecap="round" />
-                    <path d="M18.4167 3.25L18.4167 6.5" stroke="black" stroke-width="2" stroke-linecap="round" />
-                  </svg>
-                </span>
-              </div>
-            </div>
-
-
-            <!-- On-Site / Online -->
-            <div class="training-radio-group">
-              <label>
-                <input type="radio" value="On-Site" v-model="newTraining.mode" />
-                On-Site
-              </label>
-              <label>
-                <input type="radio" value="Online" v-model="newTraining.mode" />
-                Online
-              </label>
-            </div>
-
-            <!-- Conditional field -->
-            <input v-if="newTraining.mode === 'On-Site'" v-model="newTraining.location" type="text"
-              placeholder="Location" class="training-input" />
-
-            <input v-else-if="newTraining.mode === 'Online'" v-model="newTraining.trainingLink" type="url"
-              placeholder="Training Link" class="training-input" />
-
-            <!-- Always shown -->
-            <input v-model="newTraining.registrationLink" type="url" placeholder="Registration Link"
-              class="training-input" />
-
-            <!-- Save -->
-            <button type="submit" class="training-save-btn">Save</button>
-          </form>
-        </div>
-      </div>
     </main>
   </div>
 </template>
@@ -280,7 +209,6 @@
 export default {
   data() {
     return {
-      showPostOptions: false,
       openUpcomingMenu: null,
       openCompletedMenu: null,
 
@@ -295,21 +223,15 @@ export default {
         { id: 8, name: "Christine Dela Cruz", img: "https://i.pravatar.cc/100?img=8" },
         { id: 9, name: "Robert Mendoza", img: "https://i.pravatar.cc/100?img=9" },
         { id: 10, name: "Isabella Garcia", img: "https://i.pravatar.cc/100?img=10" },
-        { id: 11, name: "Daniel Chua", img: "https://i.pravatar.cc/100?img=11" },
-        { id: 12, name: "Patricia Ong", img: "https://i.pravatar.cc/100?img=12" },
-        { id: 13, name: "Michael Torres", img: "https://i.pravatar.cc/100?img=13" },
-        { id: 14, name: "Angela Bautista", img: "https://i.pravatar.cc/100?img=14" },
-        { id: 15, name: "Kevin Ramirez", img: "https://i.pravatar.cc/100?img=15" }
       ],
       showRegistrantsModal: false,
 
-      upcomingtrainings: [
+      upcomingCareers: [
         { id: 1, title: "Mind Over Machine: Navigating AI in Everyday Life", date: "September 20, 2025", time: "7:30 PM to 12:00 PM" },
         { id: 2, title: "Building Scalable Web Apps", date: "September 22, 2025", time: "9:00 AM to 11:00 AM" },
-        { id: 3, title: "Cybersecurity Fundamentals", date: "September 25, 2025", time: "1:00 PM to 4:00 PM" },
       ],
 
-      completedtrainings: [
+      completedCareers: [
         { id: 1, title: "Data Privacy and Security Essentials", date: "August 15, 2025", time: "2:00 PM – 4:00 PM" },
         { id: 2, title: "Effective Team Communication Workshop", date: "August 12, 2025", time: "9:30 AM – 11:00 AM" },
         { id: 3, title: "Introduction to Cloud Computing", date: "August 10, 2025", time: "1:00 PM – 3:30 PM" },
@@ -317,29 +239,10 @@ export default {
         { id: 5, title: "Basics of SQL", date: "August 5, 2025", time: "3:00 PM – 5:00 PM" },
         { id: 6, title: "Public Speaking Bootcamp", date: "August 3, 2025", time: "9:00 AM – 11:00 AM" },
         { id: 7, title: "Intro to Graphic Design", date: "July 31, 2025", time: "2:00 PM – 4:00 PM" },
-        { id: 8, title: "Conflict Resolution Training", date: "July 29, 2025", time: "11:00 AM – 1:00 PM" },
-        { id: 9, title: "Workplace Diversity & Inclusion", date: "July 27, 2025", time: "10:00 AM – 12:00 PM" },
-        { id: 10, title: "Excel for Data Analysis", date: "July 25, 2025", time: "9:00 AM – 11:30 AM" },
-        { id: 11, title: "Emotional Intelligence Workshop", date: "July 23, 2025", time: "1:30 PM – 3:30 PM" },
-        { id: 12, title: "Customer Service Excellence", date: "July 21, 2025", time: "2:00 PM – 4:00 PM" },
-        { id: 13, title: "Business Writing Skills", date: "July 19, 2025", time: "9:00 AM – 11:00 AM" },
-        { id: 14, title: "Leadership Essentials", date: "July 17, 2025", time: "3:00 PM – 5:00 PM" },
-        { id: 15, title: "Intro to Data Visualization", date: "July 15, 2025", time: "10:00 AM – 12:00 PM" }
       ],
 
       // Popup state + form
-      showTrainingPopup: false,
       showCareerPopup: false,
-      newTraining: {
-        title: "",
-        description: "",
-        type: "",
-        schedule: "",
-        mode: "",
-        location: "",        
-        trainingLink: "",    
-        registrationLink: "" 
-      },
       newCareer: {
         position: "",
         details: "",
@@ -378,30 +281,6 @@ export default {
         letterAddress: "",
         deadline: ""
       }
-    },
-    openTrainingPopup() {
-      this.showTrainingPopup = true
-    },
-    closeTrainingPopup() {
-      this.showTrainingPopup = false
-      this.newTraining = {
-        title: "",
-        description: "",
-        type: "",
-        schedule: "",
-        mode: "On-Site",
-        location: "",
-        registrationLink: ""
-      }
-    },
-    saveTraining() {
-      if (this.newTraining.title && this.newTraining.schedule) {
-        this.upcomingtrainings.push({
-          id: Date.now(),
-          ...this.newTraining
-        })
-        this.closeTrainingPopup()
-      }
     }
   }
 }
@@ -411,12 +290,6 @@ export default {
 <script setup>
 import { ref } from 'vue'
 
-const showPostOptions = ref(false)
-
-const togglePostOptions = () => {
-  showPostOptions.value = !showPostOptions.value
-}
-
 const isSidebarOpen = ref(true)
 
 const toggleSidebar = () => {
@@ -425,40 +298,6 @@ const toggleSidebar = () => {
 </script>
 
 <style scoped>
-.post-icon {
-  position: relative;
-  width: 100%;
-}
-
-.post-options {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  background-color: #2d3748;
-  padding: 10px;
-  border-radius: 8px;
-  z-index: 100;
-  white-space: nowrap;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  transition: opacity 0.2s ease;
-}
-
-.post-options button {
-  background-color: #44576D;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  text-align: left;
-  font-size: 13px;
-  width: 120px;
-}
-
-.post-options button:hover {
-  background-color: #5a667d;
-}
 
 /* Optional fade animation */
 .fade-enter-active,
@@ -659,7 +498,7 @@ const toggleSidebar = () => {
 
 /* Training and Job Offer Area*/
 
-.training-slider {
+.career-slider {
   display: flex;
   gap: 16px;
   overflow-x: auto;
@@ -692,7 +531,7 @@ const toggleSidebar = () => {
   color: #2d3748;
 }
 
-.training-card {
+.career-card {
   flex: 0 0 auto;
   width: 350px;
   display: flex;
@@ -705,11 +544,11 @@ const toggleSidebar = () => {
   scroll-snap-align: start;
 }
 
-.training-left {
+.career-left {
   margin-right: 12px;
 }
 
-.training-avatar {
+.career-avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -722,23 +561,23 @@ const toggleSidebar = () => {
   color: #718096;
 }
 
-.training:last-child {
+.career:last-child {
   border-bottom: none;
 }
 
-.training-title {
+.career-title {
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 4px;
   color: #2d3748;
 }
 
-.training-date {
+.career-date {
   font-size: 13px;
   color: #4a5568;
 }
 
-.training-company {
+.career-company {
   font-size: 14px;
   color: #718096;
   margin-bottom: 10px;
@@ -969,7 +808,7 @@ const toggleSidebar = () => {
   padding: 8px 10px;
   border: 1px solid #d1d5db;
   border-radius: 6px;
-  margin-bottom: 15px; 
+  margin-bottom: 15px;
   font-size: 14px;
   background: #ffffff;
   color: #111827;
@@ -982,7 +821,7 @@ const toggleSidebar = () => {
   font-weight: 500;
   padding: 10px;
   border-radius: 6px;
-  width: 100%; 
+  width: 100%;
   border: none;
   cursor: pointer;
 }
@@ -992,67 +831,14 @@ const toggleSidebar = () => {
 }
 
 /* Post Training CSS */
-.training-popup-overlay {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 50;
-}
-
-.training-popup {
-  background: #f9fafb;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  width: 400px;
-  padding: 24px;
-  position: relative;
-}
-
-.training-popup-close {
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  background: none;
-  border: none;
-  font-size: 18px;
-  color: #555;
-  cursor: pointer;
-}
-
-.training-popup-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 16px;
-}
-
-.training-popup-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.training-input {
-  width: 100%;
-  padding: 8px 10px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 14px;
-  background: #ffffff;
-  color: #111827;
-}
-
-.training-radio-group {
+.career-radio-group {
   display: flex;
   gap: 20px;
   font-size: 14px;
   color: #374151;
 }
 
-.training-save-btn {
+.career-save-btn {
   background: #374151;
   color: white;
   font-size: 14px;
@@ -1063,7 +849,7 @@ const toggleSidebar = () => {
   cursor: pointer;
 }
 
-.training-save-btn:hover {
+.career-save-btn:hover {
   background: #1f2937;
 }
 
@@ -1101,5 +887,31 @@ const toggleSidebar = () => {
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
+}
+
+/* Counter Badge */
+.count-badge {
+  background-color: #374151;
+  color: white;
+  font-weight: bold;
+  padding: 0.15rem 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+}
+
+/* Posting Botton */
+.plus-btn-text {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1;
+  color: #374151;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.plus-btn-text:hover {
+  color: #000000;
 }
 </style>
