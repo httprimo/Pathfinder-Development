@@ -45,24 +45,6 @@
           </svg>
           <span>Trainings</span>
         </div>
-        <div class="icon" @click="togglePostOptions">
-          <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M3.625 7.625C3.625 5.41586 5.41586 3.625 7.625 3.625H21.375C23.5841 3.625 25.375 5.41586 25.375 7.625V21.375C25.375 23.5841 23.5841 25.375 21.375 25.375H7.625C5.41586 25.375 3.625 23.5841 3.625 21.375V7.625Z"
-              stroke="white" stroke-width="2" />
-            <path d="M14.5 9.6665L14.5 19.3332" stroke="white" stroke-width="2" stroke-linecap="square"
-              stroke-linejoin="round" />
-            <path d="M19.3333 14.5L9.66666 14.5" stroke="white" stroke-width="2" stroke-linecap="square"
-              stroke-linejoin="round" />
-          </svg>
-          <span>Post</span>
-        </div>
-        <transition name="fade">
-          <div v-if="showPostOptions && isSidebarOpen" class="post-options">
-            <button @click="openCareerPopup">Post Career</button>
-            <button @click="openTrainingPopup">Post Training</button>
-          </div>
-        </transition>
         <div class="icon" @click="$router.push('/OrgCareers')">
           <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -291,12 +273,6 @@ import { ref } from 'vue'
 import { onMounted } from 'vue'
 import Chart from 'chart.js/auto'
 
-const showPostOptions = ref(false)
-
-const togglePostOptions = () => {
-  showPostOptions.value = !showPostOptions.value
-}
-
 const isSidebarOpen = ref(true)
 
 const toggleSidebar = () => {
@@ -337,41 +313,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.post-icon {
-  position: relative;
-  width: 100%;
-}
-
-.post-options {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  background-color: #2d3748;
-  padding: 10px;
-  border-radius: 8px;
-  z-index: 100;
-  white-space: nowrap;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  transition: opacity 0.2s ease;
-}
-
-.post-options button {
-  background-color: #44576D;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  text-align: left;
-  font-size: 13px;
-  width: 120px;
-}
-
-.post-options button:hover {
-  background-color: #5a667d;
-}
-
 /* Optional fade animation */
 .fade-enter-active,
 .fade-leave-active {
