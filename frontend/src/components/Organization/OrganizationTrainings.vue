@@ -178,32 +178,6 @@
       </div>
 
       <!-- Training Popup Modal -->
-      <div v-if="showCareerPopup" class="training-popup-overlay">
-        <div class="training-popup">
-          <!-- Close Button -->
-          <button @click="closetrainingPopup" class="training-popup-close">
-            ✕
-          </button>
-
-          <!-- Title -->
-          <h2 class="training-popup-title">Post Training</h2>
-
-          <!-- Form -->
-          <form @submit.prevent="saveTraining" class="training-popup-form">
-            <input v-model="newTraining.title" type="text" placeholder="Position" class="training-input" />
-            <input v-model="newTraining.type" type="text" placeholder="Details and Instruction" class="training-input" />
-            <textarea v-model="newTraining.description" placeholder="Qualifications" class="training-input"></textarea>
-            <textarea v-model="newTraining.description" placeholder="Requirements" class="training-input"></textarea>
-            <input v-model="newTraining.type" type="text" placeholder="Application Letter Address" class="training-input" />
-            <input v-model="newTraining.type" type="text" placeholder="Deadline of Submission" class="training-input" />
-
-            <!-- Save -->
-            <button type="submit" class="training-save-btn">Save</button>
-          </form>
-        </div>
-      </div>
-
-      <!-- Training Popup Modal -->
       <div v-if="showTrainingPopup" class="training-popup-overlay">
         <div class="training-popup">
           <!-- Close Button -->
